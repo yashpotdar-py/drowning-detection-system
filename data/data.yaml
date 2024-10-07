@@ -1,0 +1,14 @@
+names:
+- Active drowning
+- Possible Passive Drowner
+- Swimming
+nc: 3
+roboflow:
+  license: CC BY 4.0
+  project: ai-drone-lifeguard
+  url: https://universe.roboflow.com/ai-drone-lifeguard/ai-drone-lifeguard/dataset/6
+  version: 6
+  workspace: ai-drone-lifeguard
+test: test/images
+train: train/images
+val: valid/images
