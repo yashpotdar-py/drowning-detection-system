@@ -1,115 +1,201 @@
-# Drowning Detection Project
+# Drowning Detection System
 
-This project implements a drowning detection system using YOLOv8, PyTorch with CUDA 12.5, Ultralytics, Roboflow, and OpenCV.
+This project aims to create an AI-based drowning detection system using YOLOv8, capable of detecting and classifying different stages of drowning or swimming activity from drone footage. The system is trained on a custom dataset and leverages object detection techniques to identify potential drowning victims in real-time.
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Installation](#installation)
-3. [Dataset Preparation](#dataset-preparation)
-4. [Training the Model](#training-the-model)
-5. [Running Inference](#running-inference)
-6. [Troubleshooting](#troubleshooting)
+- [Project Overview](#project-overview)
+- [Directory Structure](#directory-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Data Collection](#data-collection)
+  - [Data Exploration](#data-exploration)
+  - [Model Training](#model-training)
+  - [Model Evaluation](#model-evaluation)
+  - [Model Export](#model-export)
+- [Dataset](#dataset)
+- [License](#license)
 
-## Prerequisites
+---
 
-- NVIDIA GPU with CUDA support
-- CUDA 12.5
-- Python 3.8+
+## Project Overview
+
+This system uses the YOLOv8 model to detect and classify different states of a person in water:
+
+1. **Active Drowning**
+2. **Possible Passive Drowning**
+3. **Swimming**
+
+The project involves:
+
+- Collecting and labeling drone footage.
+- Training the model using YOLOv8.
+- Evaluating and exporting the trained model for deployment.
+
+---
+
+## Directory Structure
+
+```bash
+📦drowning-detection-system
+ ┣ 📂.git                  # Git version control
+ ┣ 📂.venv                 # Python virtual environment
+ ┣ 📂data                  # Contains dataset for training, validation, and testing
+ ┃ ┣ 📂train               # Training data
+ ┃ ┣ 📂test                # Testing data
+ ┃ ┣ 📂valid               # Validation data
+ ┃ ┗ 📜data.yaml           # YOLOv8 data config file
+ ┣ 📂models                # Contains model checkpoints and predictions
+ ┣ 📂notebooks             # Jupyter Notebooks for different project stages
+ ┣ 📜best.onnx             # Best model exported to ONNX format
+ ┣ 📜.env                  # Environment variables
+ ┣ 📜.gitignore            # Ignored files by Git
+ ┣ 📜LICENSE               # Project License
+ ┗ 📜README.md             # Project documentation
+```
+
+---
 
 ## Installation
+
+### Prerequisites
+
+- [Python 3.8+](https://www.python.org/downloads/)
+- [YOLOv8](https://github.com/ultralytics/ultralytics)
+- [Roboflow API Key](https://roboflow.com/)
+
+### Setup Environment
 
 1. Clone the repository:
 
    ```bash
    git clone https://github.com/yashpotdar-py/drowning-detection-system.git
-   ```
-
-   ```bash
    cd drowning-detection-system
    ```
 
-2. Create a virtual environment:
+2. Create a virtual environment and install dependencies:
 
    ```bash
-   python -m venv .venv
+   python3 -m venv .venv
+   source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 # If you have a CUDA enabled GPU (CUDA 12.4 or above)
+   pip3 install torch torchvision torchaudio # If you don't have a CUDA enabled GPU (Not recommended)
+   pip3 install roboflow pandas numpy matplotlib
    ```
 
-   On Linux or macOS use:
-
+3. Set up environment variables by creating a `.env` file:
    ```bash
-   source .venv/bin/activate
+   ROBOFLOW_API_KEY=your_roboflow_api_key
    ```
 
-   On Windows use:
+---
 
-   ```shell
-   .venv\Scripts\activate
-   ```
+## Usage
 
-3. Install the required packages:
+### Data Collection
 
-   ```bash
-   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-   ```
+To collect data, run the `01_Collecting_Data.ipynb` notebook. This notebook uses the Roboflow API to download the dataset:
 
-   Verify PyTorch installation:
+```bash
+cd notebooks
+jupyter notebook 01_Collecting_Data.ipynb
+```
 
-   ```bash
-   python -c "import torch; print(torch.cuda.is_available())"
-   ```
+### Data Exploration
 
-   ```bash
-   pip3 install roboflow python-dotenv ipykernel
-   ```
+To explore the dataset, including class distribution, image resolutions, and bounding box statistics, run `02_Exploring_Data.ipynb`:
 
-## Dataset Preparation
+```bash
+jupyter notebook 02_Exploring_Data.ipynb
+```
 
-1. Create a Roboflow account and upload your drowning detection dataset.
-2. Export the dataset in YOLOv8 format.
-3. Download the dataset to your project directory.
+### Model Training
 
-## Training the Model
+To train the YOLOv8 model on the dataset, run `03_Model_Training.ipynb`:
 
-1. Prepare your dataset configuration file `data.yaml`:
+```bash
+jupyter notebook 03_Model_Training.ipynb
+```
 
-   path: path/to/your/dataset
-   train: train/images
-   val: valid/images
-   test: test/images
+### Model Evaluation
 
-   nc: 3 # number of classes
-   names: [- Active drowning, Possible Passive Drowner, Swimming] # class names
+To evaluate the trained model and generate predictions, use `04_Model_Evaluation_and_Exporting.ipynb`:
 
-2. Train the model:
+```bash
+jupyter notebook 04_Model_Evaluation_and_Exporting.ipynb
+```
 
-   ```bash
-   yolo task=detect mode=train model=yolov8n.pt data=data.yaml epochs=100 imgsz=640
-   ```
+### Model Export
 
-## Running Inference
+Once the model is trained, you can export it to different formats such as ONNX for deployment:
 
-1. For image inference:
+```bash
+jupyter notebook 04_Model_Evaluation_and_Exporting.ipynb
+```
 
-   ```bash
-   yolo task=detect mode=predict model=path/to/best.pt source=path/to/image.jpg
-   ```
+This will generate the `best.onnx` model file for use in production systems.
 
-2. For video inference:
+---
 
-   ```bash
-   yolo task=detect mode=predict model=path/to/best.pt source=path/to/video.mp4
-   ```
+## Dataset
 
-3. For webcam inference:
+The dataset used in this project is split into training, validation, and test sets:
 
-   ```bash
-   yolo task=detect mode=predict model=path/to/best.pt source=0 # 0 for default webcam
-   ```
+- **Training Set**: Located in `data/train/`
+- **Validation Set**: Located in `data/valid/`
+- **Test Set**: Located in `data/test/`
 
-## Troubleshooting
+The dataset includes labels for three classes:
 
-- If you encounter CUDA-related errors, ensure that your NVIDIA drivers and CUDA toolkit are properly installed and compatible with PyTorch.
-- For any other issues, please check the official documentation of YOLOv8, Ultralytics, and Roboflow.
+1. **Active Drowning**
+2. **Possible Passive Drowning**
+3. **Swimming**
 
-For more information and advanced usage, refer to the [Ultralytics YOLOv8 Documentation](https://docs.ultralytics.com/).
+The dataset's details and source can be found in `data/README.dataset.txt` and `data/README.roboflow.txt`.
+
+---
+
+## TODO
+
+### 1. Webcam Interface Integration
+
+- [ ] Implement a webcam interface to stream real-time video for detection.
+- [ ] Integrate the **best.onnx** model to process the live webcam feed and perform detection.
+- [ ] Add an option to switch between video file input and webcam feed for real-time detection.
+- [ ] Ensure low-latency, real-time detection on the webcam feed with smooth bounding box visualization.
+
+### 2. Raspberry Pi Optimization
+
+- [ ] Optimize the code and model to run efficiently on a Raspberry Pi:
+  - [ ] Convert the **best.onnx** model to a more lightweight format (e.g., TensorFlow Lite, PyTorch Mobile).
+  - [ ] Implement hardware acceleration using the Raspberry Pi GPU (e.g., OpenCV with GPU support).
+  - [ ] Optimize resource usage (memory, CPU, etc.) for smoother processing.
+- [ ] Reduce the input image size and adjust detection confidence thresholds to balance accuracy and performance.
+- [ ] Test the system thoroughly on a Raspberry Pi to minimize lag and eliminate hiccups.
+
+### 3. Frontend Development
+
+- [ ] Design and develop a user-friendly web interface for the drowning detection system.
+- [ ] Integrate live monitoring dashboard for real-time detection and alerts.
+- [ ] Display detection results (bounding boxes, confidence scores) on the frontend.
+- [ ] Include functionality to view recent detection history and performance analytics (e.g., graphs, confusion matrix).
+
+### 4. Model Performance Optimization
+
+- [ ] Fine-tune hyperparameters (batch size, frame rate, confidence threshold) to optimize detection speed without sacrificing accuracy.
+- [ ] Implement post-processing techniques to reduce false positives and enhance detection reliability.
+- [ ] Test with various webcam resolutions and optimize the detection pipeline for different lighting conditions.
+
+### 5. Documentation & Testing
+
+- [ ] Create a clear step-by-step setup guide for deploying the system on a Raspberry Pi.
+- [ ] Provide testing instructions to validate the webcam interface and ensure smooth performance on low-power devices.
+- [ ] Add troubleshooting steps for common issues like lag, detection errors, or webcam feed problems.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
