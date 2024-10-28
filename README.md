@@ -4,17 +4,27 @@ This project aims to create an AI-based drowning detection system using YOLOv8, 
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Directory Structure](#directory-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Data Collection](#data-collection)
-  - [Data Exploration](#data-exploration)
-  - [Model Training](#model-training)
-  - [Model Evaluation](#model-evaluation)
-  - [Model Export](#model-export)
-- [Dataset](#dataset)
-- [License](#license)
+- [Drowning Detection System](#drowning-detection-system)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [Directory Structure](#directory-structure)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Setup Environment](#setup-environment)
+  - [Usage](#usage)
+    - [Data Collection](#data-collection)
+    - [Data Exploration](#data-exploration)
+    - [Model Training](#model-training)
+    - [Model Evaluation](#model-evaluation)
+    - [Model Export](#model-export)
+  - [Dataset](#dataset)
+  - [TODO](#todo)
+    - [1. Webcam Interface Integration](#1-webcam-interface-integration)
+    - [2. Raspberry Pi Optimization](#2-raspberry-pi-optimization)
+    - [3. Frontend Development](#3-frontend-development)
+    - [4. Model Performance Optimization](#4-model-performance-optimization)
+    - [5. Documentation \& Testing](#5-documentation--testing)
+  - [License](#license)
 
 ---
 
@@ -79,7 +89,7 @@ The project involves:
    python3 -m venv .venv
    source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124 # If you have a CUDA enabled GPU (CUDA 12.4 or above)
-   pip3 install torch torchvision torchaudio # If you don't have a CUDA enabled GPU (Not recommended)
+   pip3 install torch torchvision torchaudio # If you don't have a CUDA enabled GPU or CUDA version below 12.2
    pip3 install roboflow pandas numpy matplotlib
    ```
 
